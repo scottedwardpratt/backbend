@@ -1,0 +1,145 @@
+\documentclass[12pt]{article}
+%#Scott Pratt, Eren Erdogan, Ekaksh Kataria 2023
+\usepackage{subfiles}
+%\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage[
+        pdfencoding=auto,%
+        pdftitle={Smooth Emulator and Simplex Sampler}
+        pdfauthor={Scott Pratt},%
+        pdfstartview=FitV,%
+        colorlinks=true,%
+        linkcolor=blue,%
+        citecolor=blue, %
+        urlcolor=blue,
+				breaklinks=true]{hyperref}
+%\usepackage[anythingbreaks,hyphenbreaks]{breakurl}
+\usepackage{xurl}
+\usepackage{comment}
+%\usepackage{pdfsync}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{nopageno}
+\usepackage{bm}
+\usepackage{dsfont}
+%\usepackage[utf8]{inputenc}
+\usepackage[small,bf]{caption}
+%\usepackage{fontspec}
+%\usepackage{textcomp}
+%\usepackage{color}
+%\usepackage{fancyhdr}
+\usepackage[titletoc]{appendix}
+%\usepackage[headheight=110pt]{geometry}
+\usepackage{bm}
+
+\numberwithin{equation}{section} 
+\numberwithin{figure}{section} 
+
+%\usepackage[most]{tcolorbox}
+%\tcbset{
+%frame code={}
+%center title,
+%left=0pt,
+%right=0pt,
+%top=0pt,
+%bottom=0pt,
+%colback=gray!25,
+%colframe=white,
+%width=\dimexpr\textwidth\relax,
+%enlarge left by=0mm,
+%boxsep=5pt,
+%arc=0pt,outer arc=0pt,
+%}
+%\newcounter{examplecounter}
+%\counterwithin{examplecounter}{section}
+%\setcounter{examplecounter}{0}
+%\newcommand{\example}[2]{\begin{tcolorbox}[breakable,enhanced]
+%\refstepcounter{examplecounter}{
+%\bf Example \arabic{section}.\arabic{examplecounter}:}~~{\bf #1}\\
+%{#2}
+%\end{tcolorbox}
+%}
+
+%\newcommand{\exampleend}{
+%\begin{samepage}
+%\nopagebreak\noindent\rule{\textwidth}{1pt}
+%\end{samepage}
+%}
+
+%\usepackage{silence}
+%\WarningFilter{hyperref}{Token not allowed in a PDF String}
+
+\newcommand\eqnumber{\addtocounter{equation}{1}\tag{\theequation}}
+%\newcommand{\solution}[1]{ }
+\newcommand\identity{\mathds{1}}
+
+\setlength{\headheight}{16pt}
+\parskip 6pt
+\parindent 0pt
+\textwidth 7.0in
+\hoffset -0.8in
+\textheight 9.2in
+\voffset -1in
+
+%\newcommand{\bm}{\boldmath}
+\boldmath
+%
+\begin{document}
+The CC equation is
+\begin{align*}
+\frac{dP}{dT}&=\frac{\sigma_{\rm gas}-\sigma_{\rm liq}}{\rho^{-1}_{\rm gas}-\rho^{-1}_{\rm liq}}\equiv \alpha.
+\end{align*}
+The quantity $\alpha$ can be thought of as the latent heat (per charge) between the two phases divided by volume (per charge) of the two phases.
+
+\begin{align*}
+\delta P_{\rm gas}&=\frac{\partial P_{\rm gas}}{\partial\rho_{\rm gas}}\delta \rho_{\rm gas}+\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\delta T_{\rm gas},\\
+\alpha\delta T_{\rm gas}&=\frac{\partial P_{\rm gas}}{\partial\rho_{\rm gas}}\delta \rho_{\rm gas}+\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\delta T_{\rm gas},\\
+\frac{\partial P_{\rm gas}}{\partial\rho_{\rm gas}}\delta\rho_{\rm gas}&=\left[\alpha-\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\right]\delta T_{\rm gas},\\
+\frac{d\rho_{\rm gas}}{dT}&=\frac{1}{\partial P_{\rm gas}/{\partial\rho_{\rm gas}}}
+\left[\alpha-\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\right]\\
+&=\frac{\partial \rho_{\rm gas}/\partial\mu_{\rm gas}}{\partial P_{\rm gas}/{\partial\mu_{\rm gas}}}
+\left[\alpha-\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\right]\\
+&=\frac{\mathcal{F}_{\rm gas}}{T}\left[\alpha-\frac{\partial P_{\rm gas}}{\partial T_{\rm gas}}\right],\\
+\mathcal{F}_{\rm gas}&=\frac{\langle(\delta Q)^2\rangle_{\rm gas}}{\langle Q\rangle_{\rm gas}}.
+\end{align*}
+Here $\mathcal{F}_{\rm gas}$ is the charge fluctuation, and is unity for a Poissonian charge limit. Near the critical point it approaches infinity. It is always positive. 
+Next, derive some thermodynamic relations for $\partial P/\partial T|_\rho$,
+\begin{align*}
+\delta P&=s\delta T +\rho\delta\mu,\\
+\delta\rho&=\left.\frac{\partial\rho}{\partial T}\right|_\mu\delta T+\frac{\rho}{T}\mathcal{F}\delta \mu=0,\\
+\delta P|_\rho&=\delta T\left[s-T\frac{\partial\rho/\partial T}{\mathcal{F}}\right],\\
+\left.\frac{\partial P}{\partial T}\right|_\rho&=s-T\frac{\partial\rho/\partial T|_\mu}{\mathcal{F}}
+\end{align*}
+
+
+where $s$ is the entropy density, this gives
+\begin{align*}
+\frac{d\rho_{\rm gas}}{dT}&=\frac{\mathcal{F}_{\rm gas}}{T}\left[\alpha-s_{\rm gas}\right]+\left.\frac{\partial\rho_{\rm gas}}{\partial T}\right|_\mu\\
+&=\frac{\mathcal{F}_{\rm gas}}{T}\left[\alpha-s_{\rm gas}\right]
++\left.\frac{\partial\rho_{\rm gas}}{\partial T}\right|_{\mu/T}
+-\frac{\mu}{T^2}\frac{\partial\rho_{\rm gas}}{\partial (\mu/T)}\\
+&=\frac{\mathcal{F}_{\rm gas}}{T}\left[\alpha-\frac{P_{\rm gas}+\epsilon_{\rm gas}}{T}\right]
++\left.\frac{\partial\rho_{\rm gas}}{\partial T}\right|_{\mu/T}.
+\end{align*}
+The last term can also be equated to the charge-energy fluctuation,
+\begin{align*}
+\left.\frac{\partial\rho_{\rm gas}}{\partial T}\right|_{\mu/T}&=\frac{1}{VT^2}\langle\delta E\delta Q\rangle_{\rm gas}
+\end{align*}
+
+\begin{comment}
+Some rearranging,
+\begin{align*}
+\alpha-s_{\rm gas}&=\frac{s_{\rm gas}\rho_{\rm lig}-s_{\rm lig}\rho_{\rm gas}}{\rho_{\rm liq}-\rho_{\rm gas}}-s_{\rm gas}\\
+&=\frac{s_{\rm gas}\rho_{\rm lig}-s_{\rm lig}\rho_{\rm liq}}{\rho_{\rm liq}-\rho_{\rm gas}}
+-\frac{s_{\rm gas}(\rho_{\rm liq}-\rho_{\rm gas})}{\rho_{\rm liq}-\rho_{\rm gas}}\\
+&=\frac{s_{\rm gas}\rho_{\rm gas}-s_{\rm liq}\rho_{\rm gas}}{\rho_{\rm liq}-\rho_{\rm gas}}\\
+&=\frac{s_{\rm gas}-s_{\rm liq}}{\rho_{\rm liq}-\rho_{\rm gas}}\rho_{\rm gas}.
+\end{align*}
+The result is:
+\begin{align*}
+\frac{d\rho_{\rm gas}}{dT}&=\frac{\mathcal{F}_{\rm gas}}{T}\frac{(s_{\rm gas}-s_{\rm liq})}{(\rho_{\rm liq}-\rho_{\rm gas})}\rho_{\rm gas} +\left.\frac{\partial\rho_{\rm gas}}{\partial T}\right|_\mu.
+\end{align*}
+\end{comment}
+
+\end{document}
+
